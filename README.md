@@ -12,3 +12,10 @@ Pour check si ca marche :
 ```bash
 ros2 interface show action_tutorials_interfaces/action/Waiter
 ```
+
+Pour le prog principal :
+```bash
+cd ~ros2_ws/src
+git clone 
+```
+
