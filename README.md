@@ -15,5 +15,5 @@ git clone https://github.com/maximilianmorlion/waiter_bringup.git
 
 Pour check si ca marche :
 ```bash
-ros2 interface show action_tutorials_interfaces/action/Waiter
+ros2 interface show waiter_bringup/action/Waiter
 ```
