@@ -8,31 +8,14 @@ import math
 import numpy as np
 import time
 from rclpy.executors import MultiThreadedExecutor
-from sensor_msgs.msg import LaserScan
+from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Twist
 
 from action_tutorials_interfaces.action import Waiter
 
 from rclpy.qos import qos_profile_system_default, qos_profile_sensor_data
 
 
-
-class ScanSub(Node):
-
-    def __init__(self):
-        super().__init__('scan_values')
-        self.subscription = self.create_subscription(
-            LaserScan,
-            'scan',
-            self.listener_callback,
-            qos_profile_system_default)
-        self.subscription  # prevent unused variable warning
-
-    def listener_callback(self, msg):
-        self.robot_width = msg.range_min
-        self.max_dist = msg.range_max
-        self.laser_scan = msg.ranges
 
 class OdomSub(Node):
 
@@ -49,6 +32,24 @@ class OdomSub(Node):
         self.x = msg.pose.pose.position.x
         self.y = msg.pose.pose.position.y
 
+class GoalPublisher(Node):
+
+    def __init__(self):
+        super().__init__('goal_publisher')
+        self.publisher_ = self.create_publisher(PoseStamped, 'goal_pose', 2)
+
+
+    def goal_callback(self):
+        msg = PoseStamped()
+        msg.pose.position.x = robot_goal[0]
+        msg.pose.position.y = robot_goal[1]
+        msg.pose.position.z = 0
+        msg.pose.orientation.x = 0
+        msg.pose.orientation.y = 0
+        msg.pose.orientation.z = 0
+        msg.pose.orientation.w = 0
+        self.publisher_.publish(msg)
+        self.get_logger().info('Publishing: "%s"' % msg.pose.position.x)
 
 class PaellalActionServer(Node):
 
@@ -66,7 +67,7 @@ class PaellalActionServer(Node):
  
 
         tables_position = goal_handle.request.goal
-            
+        goal_publisher = GoalPublisher()
         scan_sub = ScanSub()
         odom_sub = OdomSub()
         rclpy.spin_once(odom_sub)
@@ -76,7 +77,8 @@ class PaellalActionServer(Node):
         tables_done = 0.0
         for i in range(3):
             robot_goal = tables_position[i]
-            
+            rclpy.spin_once(goal_publisher)
+
             while np.abs(robot_goal-robot_pos)>0.4:
                 rclpy.spin_once(odom_sub)
                 actual_position= (odom_sub.x,odom_sub.y)
@@ -93,10 +95,10 @@ class PaellalActionServer(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    movetogoal_action_server = MovetoGoalActionServer()
+    paella_action_server = PaellaActionServer()
     executor = MultiThreadedExecutor()
-    rclpy.spin(movetogoal_action_server, executor=executor)
-    movetogoal_action_server.destroy()
+    rclpy.spin(paella_action_server, executor=executor)
+    paella_action_server.destroy()
     rclpy.shutdown()
 
 
