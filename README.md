@@ -24,5 +24,6 @@ cd ros2_ws/src && colcon build
 
 Pour check si ca marche :
 ```bash
+. install/setup.bash
 ros2 interface show waiter_bringup/action/Waiter
 ```
