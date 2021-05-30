@@ -1,0 +1,3 @@
+[console_scripts]
+time_node = waiter_bringup.__init__.py:main
+
