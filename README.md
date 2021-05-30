@@ -4,8 +4,30 @@ final project
 
 
 Run command : 
+```bash
+source ros2_ws/install/setup.bash
+sudo apt update
+sudo apt install ros-foxy-dynamixel-sdk
+sudo apt install ros-foxy-turtlebot3-msgs
+sudo apt install ros-foxy-turtlebot3
+echo 'export ROS_DOMAIN_ID=30 #TURTLEBOT3' >> ~/.bashrc
+export ROS_DOMAIN_ID=30 #TURTLEBOT3
 
+mkdir –p ~/turtlebot3_ws/src/
+cd ~/turtlebot3_ws/src/
+git clone -b foxy-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+cd ~/turtlebot3_ws && colcon build --symlink-install
+. install/setup.bash 
 
+sudo apt install ros-foxy-navigation2
+sudo apt install ros-foxy-nav2-bringup
+sudo apt install ros-foxy-turtlebot3-gazebo
+
+export TURTLEBOT3_MODEL=waffle
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/foxy/share/turtlebot3_gazebo/models
+ros2 launch nav2_bringup tb3_simulation_launch.py
+
+```
 
 Pour le prog principal :
 ```bash
