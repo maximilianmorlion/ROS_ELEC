@@ -34,7 +34,7 @@ When reopen the project :
 ```bash
 echo 'export ROS_DOMAIN_ID=30 #TURTLEBOT3' >> ~/.bashrc
 export ROS_DOMAIN_ID=30 #TURTLEBOT3
-cd ~/turtlebot3_ws/src/
+cd ~/turtlebot3_ws
 . install/setup.bash
 export TURTLEBOT3_MODEL=waffle
 export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/foxy/share/turtlebot3_gazebo/models
