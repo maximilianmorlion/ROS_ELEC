@@ -41,6 +41,9 @@ echo 'export ROS_DOMAIN_ID=30 #TURTLEBOT3' >> ~/.bashrc
 export ROS_DOMAIN_ID=30 #TURTLEBOT3
 cd ~/turtlebot3_ws
 . install/setup.bash
+sudo apt install ros-foxy-navigation2
+sudo apt install ros-foxy-nav2-bringup
+sudo apt install ros-foxy-turtlebot3-gazebo
 export TURTLEBOT3_MODEL=waffle
 export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/foxy/share/turtlebot3_gazebo/models
 ```
