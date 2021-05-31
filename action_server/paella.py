@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/python python
 
 import rclpy
 from rclpy.action import ActionServer
@@ -51,7 +51,7 @@ class GoalPublisher(Node):
         self.publisher_.publish(msg)
         self.get_logger().info('Publishing: "%s"' % msg.pose.position.x)
 
-class PaellalActionServer(Node):
+class PaellaActionServer(Node):
 
     def __init__(self):
         super().__init__('paella_action_server')
@@ -72,21 +72,28 @@ class PaellalActionServer(Node):
         odom_sub = OdomSub()
         rclpy.spin_once(odom_sub)
         
-        robot_pos = (odom_sub.x,odom_sub.y)
-        left_tables = 3.0
+        robot_pos = [odom_sub.x,odom_sub.y]
+
+        left_tables = float(len(tables_position))
         tables_done = 0.0
-        for i in range(3):
-            robot_goal = tables_position[i]
+
+        while len(tables_position) != 0:
+            distance_of_tables = []
+            for i in tables_position:
+                distance_of_tables.append(np.linalg.norm(robot_pos-i))
+            robot_goal = tables_position[np.argmin(distances_of_tables)]
+            tables_position.pop(np.argmin(distances_of_tables))
             rclpy.spin_once(goal_publisher)
-
-            while np.abs(robot_goal-robot_pos)>0.4:
+            
+            while np.linalg.norm(robot_goal-robot_pos)>0.4:
                 rclpy.spin_once(odom_sub)
-                actual_position= (odom_sub.x,odom_sub.y)
+                actual_position= [odom_sub.x,odom_sub.y]
                 
-                feedback_msg.feedback_data = [actual_position[0],actual_position[1],tables_done,tables_left]
-                self.get_logger().info('Feedback: {}'.format(feedback_msg.feedback_data))
-                goal_handle.publish_feedback(feedback_msg)
-
+            tables_done +=1.0
+            left_tables -= 1.0
+            feedback_msg.feedback_data = [actual_position[0],actual_position[1],tables_done,tables_left]
+            self.get_logger().info('Feedback: {}'.format(feedback_msg.feedback_data))
+            goal_handle.publish_feedback(feedback_msg)
         goal_handle.succeed()
         result = Waiter.Result()
         return result
