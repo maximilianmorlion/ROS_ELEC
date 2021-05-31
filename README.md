@@ -32,6 +32,11 @@ ros2 launch nav2_bringup tb3_simulation_launch.py
 When reopen the project :
 
 ```bash
+source ros2_ws/install/setup.bash
+sudo apt update
+sudo apt install ros-foxy-dynamixel-sdk
+sudo apt install ros-foxy-turtlebot3-msgs
+sudo apt install ros-foxy-turtlebot3
 echo 'export ROS_DOMAIN_ID=30 #TURTLEBOT3' >> ~/.bashrc
 export ROS_DOMAIN_ID=30 #TURTLEBOT3
 cd ~/turtlebot3_ws
